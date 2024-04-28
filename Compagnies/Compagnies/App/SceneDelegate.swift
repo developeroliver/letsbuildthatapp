@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let companiesController = CompagniesViewController()
+        let companiesController = CompagniesController()
         let navController = CustomNavigationController(rootViewController: companiesController)
         
         window = UIWindow(windowScene: windowScene)

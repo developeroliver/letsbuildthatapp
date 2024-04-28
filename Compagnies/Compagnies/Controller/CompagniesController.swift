@@ -1,5 +1,5 @@
 //
-//  CompagniesViewController.swift
+//  CompagniesController.swift
 //  Compagnies
 //
 //  Created by olivier geiger on 28/04/2024.
@@ -7,10 +7,17 @@
 
 import UIKit
 
-class CompagniesViewController: UITableViewController {
+class CompagniesController: UITableViewController {
     
     // MARK: - Properties
     let reuseID = "CELL_ID"
+    let compagnies = [
+        Company(name: "Apple", founded: Date()),
+        Company(name: "Google", founded: Date()),
+        Company(name: "Facebook", founded: Date()),
+        Company(name: "Netflix", founded: Date()),
+        Company(name: "Amazon", founded: Date()),
+    ]
     
     // MARK: - UI
     
@@ -25,7 +32,7 @@ class CompagniesViewController: UITableViewController {
 }
 
 // MARK: - @objc Functions
-extension CompagniesViewController {
+extension CompagniesController {
     
     @objc func handleAddCompany() {
         let alert = UIAlertController(title: "Ajout d'une entrepise", message: "Cette fonctionnalité n'est pas encore disponible.", preferredStyle: .alert)
@@ -45,7 +52,7 @@ extension CompagniesViewController {
 }
 
 // MARK: - Helpers
-extension CompagniesViewController {
+extension CompagniesController {
     
     private func setup() {
         view.backgroundColor = .systemBackground
@@ -69,10 +76,10 @@ extension CompagniesViewController {
 }
 
 // MARK: - DataSource and Delegate
-extension CompagniesViewController {
+extension CompagniesController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return compagnies.count
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -82,7 +89,7 @@ extension CompagniesViewController {
         return view
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
     }
     
@@ -90,8 +97,10 @@ extension CompagniesViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
         
         cell.backgroundColor = UIColor.tealColor
+        
+        let compagny = compagnies[indexPath.row]
       
-        cell.textLabel?.text = "THE COMPAGNY NAME \([indexPath.row])"
+        cell.textLabel?.text = compagny.name
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         return cell
