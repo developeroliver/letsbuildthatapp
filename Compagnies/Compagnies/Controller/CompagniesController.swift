@@ -7,17 +7,23 @@
 
 import UIKit
 
-class CompagniesController: UITableViewController {
+class CompagniesController: UITableViewController, CreateCompanyControllerDelegate {
+    func didAddCompany(company: Company) {
+        companies.append(company)
+        let newIndexPath = IndexPath(row: companies.count - 1, section: 0)
+        tableView.insertRows(at: [newIndexPath], with: .automatic)
+    }
     
     // MARK: - Properties
     let reuseID = "CELL_ID"
-    let compagnies = [
+    var companies = [
         Company(name: "Apple", founded: Date()),
         Company(name: "Google", founded: Date()),
         Company(name: "Facebook", founded: Date()),
         Company(name: "Netflix", founded: Date()),
         Company(name: "Amazon", founded: Date()),
     ]
+    var delegate: CreateCompanyControllerDelegate?
     
     // MARK: - UI
     
@@ -25,7 +31,7 @@ class CompagniesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        setupNavigationBarItem()
+        setupNavigationItem()
         setupTableView()
         layout()
     }
@@ -38,6 +44,8 @@ extension CompagniesController {
        let createCompanyController = CreateCompanyController()
         
         let navController = UINavigationController(rootViewController: createCompanyController)
+        createCompanyController.delegate = self
+        
         present(navController, animated: true)
     }
     
@@ -58,7 +66,7 @@ extension CompagniesController {
         title = "Société"
     }
     
-    private func setupNavigationBarItem() {
+    private func setupNavigationItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(reset))
@@ -78,7 +86,7 @@ extension CompagniesController {
 extension CompagniesController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return compagnies.count
+        return companies.count
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -97,7 +105,7 @@ extension CompagniesController {
         
         cell.backgroundColor = UIColor.tealColor
         
-        let compagny = compagnies[indexPath.row]
+        let compagny = companies[indexPath.row]
       
         cell.textLabel?.text = compagny.name
         cell.textLabel?.textColor = .white
