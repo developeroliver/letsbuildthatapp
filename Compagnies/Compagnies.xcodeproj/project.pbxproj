@@ -12,6 +12,7 @@
 		377F38D52BDE34EE0077F3F6 /* CompagniesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38D42BDE34EE0077F3F6 /* CompagniesViewController.swift */; };
 		377F38DA2BDE34F00077F3F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 377F38D92BDE34F00077F3F6 /* Assets.xcassets */; };
 		377F38DD2BDE34F00077F3F6 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 377F38DC2BDE34F00077F3F6 /* Base */; };
+		377F38E52BDE47640077F3F6 /* UIColor+theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38E42BDE47640077F3F6 /* UIColor+theme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		377F38D92BDE34F00077F3F6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		377F38DC2BDE34F00077F3F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		377F38DE2BDE34F00077F3F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		377F38E42BDE47640077F3F6 /* UIColor+theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+theme.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				377F38D02BDE34EE0077F3F6 /* AppDelegate.swift */,
 				377F38D22BDE34EE0077F3F6 /* SceneDelegate.swift */,
 				377F38D42BDE34EE0077F3F6 /* CompagniesViewController.swift */,
+				377F38E42BDE47640077F3F6 /* UIColor+theme.swift */,
 				377F38D92BDE34F00077F3F6 /* Assets.xcassets */,
 				377F38DB2BDE34F00077F3F6 /* LaunchScreen.storyboard */,
 				377F38DE2BDE34F00077F3F6 /* Info.plist */,
@@ -135,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				377F38D52BDE34EE0077F3F6 /* CompagniesViewController.swift in Sources */,
+				377F38E52BDE47640077F3F6 /* UIColor+theme.swift in Sources */,
 				377F38D12BDE34EE0077F3F6 /* AppDelegate.swift in Sources */,
 				377F38D32BDE34EE0077F3F6 /* SceneDelegate.swift in Sources */,
 			);

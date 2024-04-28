@@ -7,19 +7,19 @@
 
 import UIKit
 
-import UIKit
-
-class CompagniesViewController: UIViewController {
+class CompagniesViewController: UITableViewController {
     
     // MARK: - Properties
+    let reuseID = "CELL_ID"
     
-    // MARK: - UI Declarations
+    // MARK: - UI
     
     // MARK: - LifeCycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setupNavigationBarItem()
+        setupTableView()
         layout()
     }
 }
@@ -57,8 +57,44 @@ extension CompagniesViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(reset))
     }
-    private func layout() {
+    
+    private func setupTableView() {
+        tableView.backgroundColor = UIColor.darkBlue
+        tableView.separatorStyle = .none
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseID)
+        tableView.tableFooterView = UIView()
+    }
+    
+    private func layout() { }
+}
+
+// MARK: - DataSource and Delegate
+extension CompagniesViewController {
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+            view.backgroundColor = UIColor.lightBlue
         
+        return view
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
+        
+        cell.backgroundColor = UIColor.tealColor
+      
+        cell.textLabel?.text = "THE COMPAGNY NAME \([indexPath.row])"
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
+        return cell
     }
 }
 
