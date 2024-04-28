@@ -9,12 +9,19 @@ import SnapKit
 import CoreData
 
 protocol CreateCompanyControllerDelegate {
-        func didAddCompany(company: Company)
+    func didAddCompany(company: Company)
+    func didEditCompany(company: Company)
 }
 
 class CreateCompanyController: UIViewController {
     
     // MARK: - Properties
+    var company: Company? {
+        didSet {
+            nameTextField.text = company?.name
+        }
+    }
+    
     var delegate: CreateCompanyControllerDelegate?
     
     // MARK: - UI Declarations
@@ -57,6 +64,11 @@ class CreateCompanyController: UIViewController {
         setupNavigationItem()
         layout()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        title = company == nil ? "Créer une société" : "Éditer une société"
+    }
 }
 
 // MARK: - @objc Functions
@@ -67,7 +79,41 @@ extension CreateCompanyController {
     }
     
     @objc func handleSave() {
+        if company == nil {
+            createCompany()
+        } else {
+            saveCompanyChanges()
+        }
+    }
+    
+    @objc func saveCompanyChanges() {
+        guard let name = nameTextField.text, !name.isEmpty else {
+            let alertController = UIAlertController(title: "Champs incomplets", message: "Veuillez remplir tous les champs avant de sauvegarder.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alertController.addAction(action)
+            present(alertController, animated: true, completion: nil)
+            return
+        }
         
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        
+        company?.name = nameTextField.text
+        
+        do {
+            try context.save()
+            dismiss(animated: true, completion: {
+                self.delegate?.didEditCompany(company: self.company!)
+            })
+        } catch let saveError {
+            print("Failed to save company:", saveError)
+        }
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    private func createCompany() {
         guard let name = nameTextField.text, !name.isEmpty else {
             let alertController = UIAlertController(title: "Champs incomplets", message: "Veuillez remplir tous les champs avant de sauvegarder.", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -91,10 +137,6 @@ extension CreateCompanyController {
             print("Failed to save company:", saveError)
         }
     }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
-    }
 }
 
 // MARK: - Helpers
@@ -102,7 +144,6 @@ extension CreateCompanyController {
     
     private func setup() {
         view.backgroundColor = UIColor.darkBlue
-        title = "Créer une société"
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)

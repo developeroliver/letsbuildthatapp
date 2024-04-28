@@ -15,12 +15,16 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
         tableView.insertRows(at: [newIndexPath], with: .automatic)
     }
     
+    func didEditCompany(company: Company) {
+        let row = companies.firstIndex(of: company)
+        let reloadIndexPath = IndexPath(row: row!, section: 0)
+        tableView.reloadRows(at: [reloadIndexPath], with: .middle)
+    }
+    
     // MARK: - Properties
     let reuseID = "CELL_ID"
     var companies = [Company]()
     var delegate: CreateCompanyControllerDelegate?
-    
-    // MARK: - UI
     
     // MARK: - LifeCycle Methods
     override func viewDidLoad() {
@@ -37,7 +41,7 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
 extension CompagniesController {
     
     @objc func handleAddCompany() {
-       let createCompanyController = CreateCompanyController()
+        let createCompanyController = CreateCompanyController()
         
         let navController = UINavigationController(rootViewController: createCompanyController)
         createCompanyController.delegate = self
@@ -52,6 +56,7 @@ extension CompagniesController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
+    
     
     private func fetchCompanies() {
         let context = CoreDataManager.shared.persistentContainer.viewContext
@@ -105,7 +110,7 @@ extension CompagniesController {
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
-            view.backgroundColor = UIColor.lightBlue
+        view.backgroundColor = UIColor.lightBlue
         
         return view
     }
@@ -118,15 +123,53 @@ extension CompagniesController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
         
         cell.backgroundColor = UIColor.tealColor
-        cell.tintColor = UIColor.lightRed
+        let selectedView = UIView()
+        selectedView.backgroundColor = UIColor.lightRed
+        cell.selectedBackgroundView = selectedView
         
         let compagny = companies[indexPath.row]
-      
+        
         cell.textLabel?.text = compagny.name
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { [self] (action, view, completion) in
+            let company = companies[indexPath.row]
+            
+            self.companies.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            let context = CoreDataManager.shared.persistentContainer.viewContext
+            context.delete(company)
+            do {
+                try context.save()
+            } catch let saveError {
+                print("Failed to delete company:", saveError)
+            }
+            
+            completion(true)
+        }
+        
+        let editAction = UIContextualAction(style: .normal, title: "Éditer") { [self] (action, view, completion) in
+            let editCompanyController = CreateCompanyController()
+            
+            editCompanyController.delegate = self
+            editCompanyController.company = companies[indexPath.row]
+            let navController = CustomNavigationController(rootViewController: editCompanyController)
+            present(navController, animated: true, completion: nil)
+            
+            completion(true)
+        }
+        
+        editAction.backgroundColor = UIColor.darkBlue
+        
+        let configuration = UISwipeActionsConfiguration(actions: [ deleteAction, editAction])
+        return configuration
     }
 }
 
