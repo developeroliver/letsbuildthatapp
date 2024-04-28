@@ -35,11 +35,10 @@ class CompagniesController: UITableViewController {
 extension CompagniesController {
     
     @objc func handleAddCompany() {
-        let alert = UIAlertController(title: "Ajout d'une entrepise", message: "Cette fonctionnalité n'est pas encore disponible.", preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+       let createCompanyController = CreateCompanyController()
         
-        alert.addAction(action)
-        present(alert, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: createCompanyController)
+        present(navController, animated: true)
     }
     
     @objc func reset() {
@@ -56,7 +55,7 @@ extension CompagniesController {
     
     private func setup() {
         view.backgroundColor = .systemBackground
-        title = "Compagnies"
+        title = "Société"
     }
     
     private func setupNavigationBarItem() {

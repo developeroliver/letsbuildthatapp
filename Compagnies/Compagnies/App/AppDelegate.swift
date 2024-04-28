@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().prefersLargeTitles = true
             
             UINavigationBar.appearance().compactAppearance = appearance
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
