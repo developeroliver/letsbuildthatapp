@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class CompagniesController: UITableViewController, CreateCompanyControllerDelegate {
     func didAddCompany(company: Company) {
@@ -16,13 +17,7 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
     
     // MARK: - Properties
     let reuseID = "CELL_ID"
-    var companies = [
-        Company(name: "Apple", founded: Date()),
-        Company(name: "Google", founded: Date()),
-        Company(name: "Facebook", founded: Date()),
-        Company(name: "Netflix", founded: Date()),
-        Company(name: "Amazon", founded: Date()),
-    ]
+    var companies = [Company]()
     var delegate: CreateCompanyControllerDelegate?
     
     // MARK: - UI
@@ -34,6 +29,29 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
         setupNavigationItem()
         setupTableView()
         layout()
+        fetchCompanies()
+    }
+    
+    private func fetchCompanies() {
+        let persistenceContainer = NSPersistentContainer(name: "CompaniesModels")
+        persistenceContainer.loadPersistentStores { NSPersistentStoreDescription, error in
+            if let error = error {
+                fatalError("Loading of store failed: \(error)")
+            }
+        }
+        
+        let context = persistenceContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
+        
+        do {
+            let companies = try context.fetch(fetchRequest)
+            companies.forEach { company in
+                print(company.name ?? "")
+            }
+        } catch let fetchError{
+            print("Failed to fetch companies:", fetchError)
+        }
     }
 }
 

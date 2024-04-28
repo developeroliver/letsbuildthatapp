@@ -15,6 +15,7 @@
 		377F38E72BDE4F3D0077F3F6 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38E62BDE4F3D0077F3F6 /* Company.swift */; };
 		377F38ED2BDE54450077F3F6 /* CreateCompanyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38EC2BDE54450077F3F6 /* CreateCompanyController.swift */; };
 		377F38F02BDE59110077F3F6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 377F38EF2BDE59110077F3F6 /* SnapKit */; };
+		377F38FC2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 377F38FA2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		377F38E42BDE47640077F3F6 /* UIColor+theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+theme.swift"; sourceTree = "<group>"; };
 		377F38E62BDE4F3D0077F3F6 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
 		377F38EC2BDE54450077F3F6 /* CreateCompanyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCompanyController.swift; sourceTree = "<group>"; };
+		377F38FB2BDEA5110077F3F6 /* CompaniesModels.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CompaniesModels.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				377F38E92BDE52060077F3F6 /* Controller */,
 				377F38EB2BDE521B0077F3F6 /* Model */,
 				377F38EA2BDE520E0077F3F6 /* Utils */,
+				377F38FA2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld */,
 			);
 			path = Compagnies;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 				377F38D12BDE34EE0077F3F6 /* AppDelegate.swift in Sources */,
 				377F38E72BDE4F3D0077F3F6 /* Company.swift in Sources */,
 				377F38D32BDE34EE0077F3F6 /* SceneDelegate.swift in Sources */,
+				377F38FC2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld in Sources */,
 				377F38ED2BDE54450077F3F6 /* CreateCompanyController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -413,6 +417,20 @@
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		377F38FA2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				377F38FB2BDEA5110077F3F6 /* CompaniesModels.xcdatamodel */,
+			);
+			currentVersion = 377F38FB2BDEA5110077F3F6 /* CompaniesModels.xcdatamodel */;
+			name = CompaniesModels.xcdatamodeld;
+			path = /Users/oliviergeiger/DEVs/UIKit/letsbuildthatapp/Compagnies/Compagnies/CompaniesModels.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 377F38C52BDE34EE0077F3F6 /* Project object */;
 }

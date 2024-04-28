@@ -6,9 +6,10 @@
 //
 import UIKit
 import SnapKit
+import CoreData
 
 protocol CreateCompanyControllerDelegate {
-    func didAddCompany(company: Company)
+        func didAddCompany(company: Company)
 }
 
 class CreateCompanyController: UIViewController {
@@ -66,12 +67,40 @@ extension CreateCompanyController {
     }
     
     @objc func handleSave() {
-        dismiss(animated: true) { [self] in
-            guard let name = nameTextField.text else { return }
-            let compagny = Company(name: name, founded: Date())
-            
-            delegate?.didAddCompany(company: compagny)
+        
+        guard let name = nameTextField.text, !name.isEmpty else {
+            let alertController = UIAlertController(title: "Champs incomplets", message: "Veuillez remplir tous les champs avant de sauvegarder.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alertController.addAction(action)
+            present(alertController, animated: true, completion: nil)
+            return
         }
+        
+        let persistenceContainer = NSPersistentContainer(name: "CompaniesModels")
+        persistenceContainer.loadPersistentStores { NSPersistentStoreDescription, error in
+            if let error = error {
+                fatalError("Loading of store failed: \(error)")
+            }
+        }
+        
+        let context = persistenceContainer.viewContext
+        let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
+        
+        company.setValue(nameTextField.text, forKey: "name")
+        
+        do {
+            try context.save()
+        } catch let saveError {
+            print("Failed to save company:", saveError)
+        }
+       
+        
+        //            dismiss(animated: true) { [self] in
+        //                guard let name = nameTextField.text else { return }
+        //                let compagny = Company(name: name, founded: Date())
+        //
+        //                delegate?.didAddCompany(company: compagny)
+        //        }
     }
     
     @objc func dismissKeyboard() {
