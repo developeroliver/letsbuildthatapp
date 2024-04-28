@@ -31,28 +31,6 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
         layout()
         fetchCompanies()
     }
-    
-    private func fetchCompanies() {
-        let persistenceContainer = NSPersistentContainer(name: "CompaniesModels")
-        persistenceContainer.loadPersistentStores { NSPersistentStoreDescription, error in
-            if let error = error {
-                fatalError("Loading of store failed: \(error)")
-            }
-        }
-        
-        let context = persistenceContainer.viewContext
-        
-        let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
-        
-        do {
-            let companies = try context.fetch(fetchRequest)
-            companies.forEach { company in
-                print(company.name ?? "")
-            }
-        } catch let fetchError{
-            print("Failed to fetch companies:", fetchError)
-        }
-    }
 }
 
 // MARK: - @objc Functions
@@ -73,6 +51,24 @@ extension CompagniesController {
         
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    private func fetchCompanies() {
+        let context = CoreDataManager.shared.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<Company>(entityName: "Company")
+        
+        do {
+            let companies = try context.fetch(fetchRequest)
+            companies.forEach { company in
+                print(company.name ?? "")
+            }
+            
+            self.companies = companies
+            self.tableView.reloadData()
+        } catch let fetchError{
+            print("Failed to fetch companies:", fetchError)
+        }
     }
 }
 
@@ -122,12 +118,14 @@ extension CompagniesController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
         
         cell.backgroundColor = UIColor.tealColor
+        cell.tintColor = UIColor.lightRed
         
         let compagny = companies[indexPath.row]
       
         cell.textLabel?.text = compagny.name
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
+        
         return cell
     }
 }

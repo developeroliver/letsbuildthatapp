@@ -76,31 +76,20 @@ extension CreateCompanyController {
             return
         }
         
-        let persistenceContainer = NSPersistentContainer(name: "CompaniesModels")
-        persistenceContainer.loadPersistentStores { NSPersistentStoreDescription, error in
-            if let error = error {
-                fatalError("Loading of store failed: \(error)")
-            }
-        }
+        let context = CoreDataManager.shared.persistentContainer.viewContext
         
-        let context = persistenceContainer.viewContext
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         
         company.setValue(nameTextField.text, forKey: "name")
         
         do {
             try context.save()
+            dismiss(animated: true) {
+                self.delegate?.didAddCompany(company: company as! Company)
+            }
         } catch let saveError {
             print("Failed to save company:", saveError)
         }
-       
-        
-        //            dismiss(animated: true) { [self] in
-        //                guard let name = nameTextField.text else { return }
-        //                let compagny = Company(name: name, founded: Date())
-        //
-        //                delegate?.didAddCompany(company: compagny)
-        //        }
     }
     
     @objc func dismissKeyboard() {
