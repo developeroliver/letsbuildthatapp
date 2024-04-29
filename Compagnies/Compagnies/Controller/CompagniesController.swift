@@ -49,12 +49,29 @@ extension CompagniesController {
         present(navController, animated: true)
     }
     
-    @objc private func reset() {
-        let alert = UIAlertController(title: "Réinitialisation data base", message: "Cette fonctionnalité n'est pas encore disponible.", preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+    @objc private func handleReset() {
+        let context = CoreDataManager.shared.persistentContainer.viewContext
         
-        alert.addAction(action)
-        present(alert, animated: true, completion: nil)
+//        companies.forEach { company in
+//            context.delete(company)
+//        }
+        
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: Company.fetchRequest())
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            
+            var indexPathToRemove = [IndexPath]()
+            for (index, _) in companies.enumerated() {
+                let indexPath = IndexPath(row: index, section: 0)
+                indexPathToRemove.append(indexPath)
+            }
+            companies.removeAll()
+            tableView.deleteRows(at: indexPathToRemove, with: .left)
+           
+        } catch let deleteError {
+            print("Failed to delete objects from Core Data:", deleteError)
+        }
     }
     
     
@@ -88,13 +105,13 @@ extension CompagniesController {
     private func setupNavigationItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(reset))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(handleReset))
     }
     
+    // MARK: - table view
     private func setupTableView() {
         tableView.backgroundColor = UIColor.darkBlue
         tableView.separatorStyle = .none
-        tableView.rowHeight = 50
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseID)
         tableView.tableFooterView = UIView()
     }
@@ -135,10 +152,10 @@ extension CompagniesController {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd MMMM yyyy"
             dateFormatter.locale = Locale(identifier: "FR")
-               dateFormatter.dateStyle = .medium
-               dateFormatter.timeStyle = .none
-               let dateString = "\(name) - founded: \(dateFormatter.string(from: founded))"
-               cell.textLabel?.text = dateString
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .none
+            let dateString = "\(name) - founded: \(dateFormatter.string(from: founded))"
+            cell.textLabel?.text = dateString
         } else {
             cell.textLabel?.text = company.name
         }
@@ -147,21 +164,12 @@ extension CompagniesController {
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         
-        let imageSize: CGFloat = 40
-            
-            cell.imageView?.frame = CGRect(x: 0, y: 0, width: imageSize, height: imageSize)
-            cell.imageView?.contentMode = .scaleAspectFill
-            cell.imageView?.clipsToBounds = true
-            
-            if let imageData = company.imageData {
-                cell.imageView?.image = UIImage(data: imageData)
-            } else {
-                cell.imageView?.image = UIImage(named: "select_photo_empty")
-            }
-            
-            // Rendre l'image circulaire
-            cell.imageView?.layer.cornerRadius = imageSize / 2
-
+        if let imageData = company.imageData {
+            cell.imageView?.image = UIImage(data: imageData)
+        } else {
+            cell.imageView?.image = UIImage(named: "select_photo_empty")
+        }
+        
         return cell
     }
     
@@ -169,32 +177,32 @@ extension CompagniesController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { [self] (action, view, completion) in
-                let alertController = UIAlertController(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer cette société ?", preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer cette société ?", preferredStyle: .actionSheet)
+            
+            let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { _ in
+                let company = self.companies[indexPath.row]
+                self.companies.remove(at: indexPath.row)
+                self.tableView.deleteRows(at: [indexPath], with: .fade)
                 
-                let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { _ in
-                    let company = self.companies[indexPath.row]
-                    self.companies.remove(at: indexPath.row)
-                    self.tableView.deleteRows(at: [indexPath], with: .fade)
-                    
-                    let context = CoreDataManager.shared.persistentContainer.viewContext
-                    context.delete(company)
-                    
-                    do {
-                        try context.save()
-                    } catch let saveError {
-                        print("Failed to delete company:", saveError)
-                    }
-                    
-                    completion(true)
+                let context = CoreDataManager.shared.persistentContainer.viewContext
+                context.delete(company)
+                
+                do {
+                    try context.save()
+                } catch let saveError {
+                    print("Failed to delete company:", saveError)
                 }
                 
-                let cancelAction = UIAlertAction(title: "Annuler", style: .cancel, handler: nil)
-                
-                alertController.addAction(confirmAction)
-                alertController.addAction(cancelAction)
-                
-                present(alertController, animated: true, completion: nil)
+                completion(true)
             }
+            
+            let cancelAction = UIAlertAction(title: "Annuler", style: .cancel, handler: nil)
+            
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancelAction)
+            
+            present(alertController, animated: true, completion: nil)
+        }
         
         let editAction = UIContextualAction(style: .normal, title: "Éditer") { [self] (action, view, completion) in
             let editCompanyController = CreateCompanyController()
@@ -212,6 +220,20 @@ extension CompagniesController {
         let configuration = UISwipeActionsConfiguration(actions: [ deleteAction, editAction])
         
         return configuration
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let label = UILabel()
+        label.text = "Pas de société de disponible..."
+        label.textColor = .white
+        label.textAlignment = .center
+        label.font =  UIFont(name: "AvenirNext-Medium", size: 18)
+        
+        return label
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return companies.count ==  0 ? 150 : 0
     }
 }
 
