@@ -19,6 +19,8 @@ class CreateCompanyController: UIViewController {
     var company: Company? {
         didSet {
             nameTextField.text = company?.name
+            guard let founded = company?.founded else { return }
+            datePicker.date = founded
         }
     }
     
@@ -43,10 +45,11 @@ class CreateCompanyController: UIViewController {
         let textField = UITextField()
         textField.placeholder = "Entrer le nom"
         textField.font = UIFont(name: "AvenirNext-Medium", size: 14)
+        textField.delegate = self
         return textField
     }()
     
-    private lazy var stackView: UIStackView = {
+    lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             nameLabel,
             nameTextField,
@@ -55,6 +58,13 @@ class CreateCompanyController: UIViewController {
         stackView.axis = .horizontal
         stackView.spacing = 20
         return stackView
+    }()
+    
+    lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.locale = Locale(identifier: "FR")
+        return datePicker
     }()
     
     // MARK: - LifeCycle Methods
@@ -98,6 +108,7 @@ extension CreateCompanyController {
         let context = CoreDataManager.shared.persistentContainer.viewContext
         
         company?.name = nameTextField.text
+        company?.founded = datePicker.date
         
         do {
             try context.save()
@@ -127,6 +138,7 @@ extension CreateCompanyController {
         let company = NSEntityDescription.insertNewObject(forEntityName: "Company", into: context)
         
         company.setValue(nameTextField.text, forKey: "name")
+        company.setValue(datePicker.date, forKey: "founded")
         
         do {
             try context.save()
@@ -145,6 +157,7 @@ extension CreateCompanyController {
     private func setup() {
         view.backgroundColor = UIColor.darkBlue
         
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
@@ -158,18 +171,32 @@ extension CreateCompanyController {
     private func layout() {
         view.addSubview(lightBlueBackgroundView)
         view.addSubview(stackView)
+        view.addSubview(datePicker)
         
         lightBlueBackgroundView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(50)
+            make.height.equalTo(250)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(lightBlueBackgroundView.snp.top).offset(5)
+            make.top.equalTo(lightBlueBackgroundView.snp.top).offset(10)
+            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(20)
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-20)        }
+        
+        datePicker.snp.makeConstraints { make in
             make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(20)
             make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-20)
-            make.bottom.equalTo(lightBlueBackgroundView.snp.bottom).offset(-5)
+            make.top.equalTo(stackView.snp.bottom).offset(8)
         }
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension CreateCompanyController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

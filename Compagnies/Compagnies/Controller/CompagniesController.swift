@@ -109,7 +109,7 @@ extension CompagniesController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
+        let view = CustomHeaderView()
         view.backgroundColor = UIColor.lightBlue
         
         return view
@@ -119,6 +119,7 @@ extension CompagniesController {
         return 50
     }
     
+    // MARK: - cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
         
@@ -127,22 +128,34 @@ extension CompagniesController {
         selectedView.backgroundColor = UIColor.lightRed
         cell.selectedBackgroundView = selectedView
         
-        let compagny = companies[indexPath.row]
+        let company = companies[indexPath.row]
         
-        cell.textLabel?.text = compagny.name
+        if let name = company.name, let founded = company.founded {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd MMMM yyyy"
+            dateFormatter.locale = Locale(identifier: "FR")
+               dateFormatter.dateStyle = .medium
+               dateFormatter.timeStyle = .none
+               let dateString = "\(name) - founded: \(dateFormatter.string(from: founded))"
+               cell.textLabel?.text = dateString
+        } else {
+            cell.textLabel?.text = company.name
+        }
+        
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         
         return cell
     }
     
+    // MARK: - Swipe
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { [self] (action, view, completion) in
             let company = companies[indexPath.row]
             
             self.companies.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.deleteRows(at: [indexPath], with: .fade)
             
             let context = CoreDataManager.shared.persistentContainer.viewContext
             context.delete(company)

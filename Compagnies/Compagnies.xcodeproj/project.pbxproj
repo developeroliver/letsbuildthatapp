@@ -16,6 +16,7 @@
 		377F38F02BDE59110077F3F6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 377F38EF2BDE59110077F3F6 /* SnapKit */; };
 		377F38FC2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 377F38FA2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld */; };
 		377F38FE2BDEB3D50077F3F6 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38FD2BDEB3D50077F3F6 /* CoreDataManager.swift */; };
+		377F39012BDECCED0077F3F6 /* CustomHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F39002BDECCED0077F3F6 /* CustomHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		377F38EC2BDE54450077F3F6 /* CreateCompanyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCompanyController.swift; sourceTree = "<group>"; };
 		377F38FB2BDEA5110077F3F6 /* CompaniesModels.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CompaniesModels.xcdatamodel; sourceTree = "<group>"; };
 		377F38FD2BDEB3D50077F3F6 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		377F39002BDECCED0077F3F6 /* CustomHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				377F38E92BDE52060077F3F6 /* Controller */,
 				377F38EB2BDE521B0077F3F6 /* Model */,
 				377F38EA2BDE520E0077F3F6 /* Utils */,
+				377F39022BDECD6D0077F3F6 /* View */,
 			);
 			path = Compagnies;
 			sourceTree = "<group>";
@@ -105,6 +108,14 @@
 				377F38FD2BDEB3D50077F3F6 /* CoreDataManager.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		377F39022BDECD6D0077F3F6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				377F39002BDECCED0077F3F6 /* CustomHeaderView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,6 +193,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				377F39012BDECCED0077F3F6 /* CustomHeaderView.swift in Sources */,
 				377F38D52BDE34EE0077F3F6 /* CompagniesController.swift in Sources */,
 				377F38E52BDE47640077F3F6 /* UIColor+theme.swift in Sources */,
 				377F38D12BDE34EE0077F3F6 /* AppDelegate.swift in Sources */,
