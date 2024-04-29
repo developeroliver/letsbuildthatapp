@@ -20,8 +20,8 @@ class CustomHeaderView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.darkBlue
-        label.font = UIFont(name: "AvenirNext-Medium", size: 18)
-        label.text = "Name"
+        label.font = UIFont(name: "AvenirNext-Bold", size: 18)
+        label.text = "Noms"
         return label
     }()
     

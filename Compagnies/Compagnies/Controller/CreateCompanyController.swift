@@ -45,7 +45,6 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate 
         let imageView = UIImageView()
         imageView.image = UIImage(named: "select_photo_empty")
         imageView.contentMode = .scaleAspectFill
-        
         imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectPhoto)))
         return imageView
@@ -53,7 +52,7 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate 
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Name"
+        label.text = "Nom"
         label.font = UIFont(name: "AvenirNext-Medium", size: 16)
         label.backgroundColor = UIColor.lightBlue
         return label

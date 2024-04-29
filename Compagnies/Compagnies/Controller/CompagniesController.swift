@@ -111,8 +111,7 @@ extension CompagniesController {
     // MARK: - table view
     private func setupTableView() {
         tableView.backgroundColor = UIColor.darkBlue
-        tableView.separatorStyle = .none
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseID)
+        tableView.register(CompanyCell.self, forCellReuseIdentifier: reuseID)
         tableView.tableFooterView = UIView()
     }
     
@@ -139,38 +138,24 @@ extension CompagniesController {
     
     // MARK: - cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath) as! CompanyCell
         
         cell.backgroundColor = UIColor.tealColor
         let selectedView = UIView()
         selectedView.backgroundColor = UIColor.lightRed
         cell.selectedBackgroundView = selectedView
+        let disclosureIndicator = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
+        disclosureIndicator.tintColor = .white
+        cell.accessoryView = disclosureIndicator
         
         let company = companies[indexPath.row]
-        
-        if let name = company.name, let founded = company.founded {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd MMMM yyyy"
-            dateFormatter.locale = Locale(identifier: "FR")
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .none
-            let dateString = "\(name) - founded: \(dateFormatter.string(from: founded))"
-            cell.textLabel?.text = dateString
-        } else {
-            cell.textLabel?.text = company.name
-        }
-        
-        cell.imageView?.image = UIImage(named:  "select_photo_empty")
-        cell.textLabel?.textColor = .white
-        cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
-        
-        if let imageData = company.imageData {
-            cell.imageView?.image = UIImage(data: imageData)
-        } else {
-            cell.imageView?.image = UIImage(named: "select_photo_empty")
-        }
+        cell.company = company
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
     
     // MARK: - Swipe

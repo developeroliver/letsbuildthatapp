@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3777EEBF2BDFC4EA002F7734 /* CompanyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */; };
 		377F38D12BDE34EE0077F3F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38D02BDE34EE0077F3F6 /* AppDelegate.swift */; };
 		377F38D32BDE34EE0077F3F6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38D22BDE34EE0077F3F6 /* SceneDelegate.swift */; };
 		377F38D52BDE34EE0077F3F6 /* CompagniesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377F38D42BDE34EE0077F3F6 /* CompagniesController.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCell.swift; sourceTree = "<group>"; };
 		377F38CD2BDE34EE0077F3F6 /* Compagnies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Compagnies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		377F38D02BDE34EE0077F3F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		377F38D22BDE34EE0077F3F6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				377F39002BDECCED0077F3F6 /* CustomHeaderView.swift */,
+				3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				377F38D52BDE34EE0077F3F6 /* CompagniesController.swift in Sources */,
 				377F38E52BDE47640077F3F6 /* UIColor+theme.swift in Sources */,
 				377F38D12BDE34EE0077F3F6 /* AppDelegate.swift in Sources */,
+				3777EEBF2BDFC4EA002F7734 /* CompanyCell.swift in Sources */,
 				377F38D32BDE34EE0077F3F6 /* SceneDelegate.swift in Sources */,
 				377F38FC2BDEA5110077F3F6 /* CompaniesModels.xcdatamodeld in Sources */,
 				377F38FE2BDEB3D50077F3F6 /* CoreDataManager.swift in Sources */,
