@@ -169,21 +169,32 @@ extension CompagniesController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { [self] (action, view, completion) in
-            let company = companies[indexPath.row]
-            
-            self.companies.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .fade)
-            
-            let context = CoreDataManager.shared.persistentContainer.viewContext
-            context.delete(company)
-            do {
-                try context.save()
-            } catch let saveError {
-                print("Failed to delete company:", saveError)
+                let alertController = UIAlertController(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer cette société ?", preferredStyle: .actionSheet)
+                
+                let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { _ in
+                    let company = self.companies[indexPath.row]
+                    self.companies.remove(at: indexPath.row)
+                    self.tableView.deleteRows(at: [indexPath], with: .fade)
+                    
+                    let context = CoreDataManager.shared.persistentContainer.viewContext
+                    context.delete(company)
+                    
+                    do {
+                        try context.save()
+                    } catch let saveError {
+                        print("Failed to delete company:", saveError)
+                    }
+                    
+                    completion(true)
+                }
+                
+                let cancelAction = UIAlertAction(title: "Annuler", style: .cancel, handler: nil)
+                
+                alertController.addAction(confirmAction)
+                alertController.addAction(cancelAction)
+                
+                present(alertController, animated: true, completion: nil)
             }
-            
-            completion(true)
-        }
         
         let editAction = UIContextualAction(style: .normal, title: "Éditer") { [self] (action, view, completion) in
             let editCompanyController = CreateCompanyController()
@@ -199,6 +210,7 @@ extension CompagniesController {
         editAction.backgroundColor = UIColor.darkBlue
         
         let configuration = UISwipeActionsConfiguration(actions: [ deleteAction, editAction])
+        
         return configuration
     }
 }
