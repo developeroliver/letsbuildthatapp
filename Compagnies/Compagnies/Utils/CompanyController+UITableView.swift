@@ -24,26 +24,18 @@ extension CompagniesController {
         return 50
     }
     
-    // MARK: - cell
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath) as! CompanyCell
-        
-        cell.backgroundColor = UIColor.tealColor
-        let selectedView = UIView()
-        selectedView.backgroundColor = UIColor.lightRed
-        cell.selectedBackgroundView = selectedView
-        let disclosureIndicator = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
-        disclosureIndicator.tintColor = .white
-        cell.accessoryView = disclosureIndicator
-        
-        let company = companies[indexPath.row]
-        cell.company = company
-        
-        return cell
-    }
+    // Cell
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let company = companies[indexPath.row]
+        let navigation = EmployeesController()
+        navigation.compagny = company
+        
+        navigationController?.pushViewController(navigation, animated: true)
     }
     
     // MARK: - Swipe
@@ -69,7 +61,9 @@ extension CompagniesController {
                 completion(true)
             }
             
-            let cancelAction = UIAlertAction(title: "Annuler", style: .cancel, handler: nil)
+            let cancelAction = UIAlertAction(title: "Annuler", style: .cancel) { _ in
+                    completion(true)
+            }
             
             alertController.addAction(confirmAction)
             alertController.addAction(cancelAction)

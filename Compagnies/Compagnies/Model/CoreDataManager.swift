@@ -38,12 +38,28 @@ struct CoreDataManager {
     func resetCompanies(completion: () -> ()) {
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: Company.fetchRequest())
-            
-            do {
-                try context.execute(batchDeleteRequest)
-                completion()
-            } catch {
-                print(error.localizedDescription)
-            }
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            completion()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func createEmployee(employeeName: String) -> Error? {
+        let context = persistentContainer.viewContext
+        
+        let employee = NSEntityDescription.insertNewObject(forEntityName: "Employee", into: context)
+        
+        employee.setValue(employeeName, forKey: "name")
+        
+        do {
+            try context.save()
+            return nil
+        } catch let saveError {
+            return saveError
+            print("Failed to create employee:", saveError)
+        }
     }
 }

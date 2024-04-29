@@ -59,7 +59,7 @@ extension CompagniesController {
     }
     
     private func setupNavigationItem() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "plus").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleAddCompany))
+        setupPlusButtonInNavBar(selector: #selector(handleAddCompany))
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(handleReset))
     }
@@ -71,3 +71,22 @@ extension CompagniesController {
     }
 }
 
+extension CompagniesController {
+    // MARK: - cell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath) as! CompanyCell
+        
+        cell.backgroundColor = UIColor.tealColor
+        let selectedView = UIView()
+        selectedView.backgroundColor = UIColor.lightRed
+        cell.selectedBackgroundView = selectedView
+        let disclosureIndicator = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
+        disclosureIndicator.tintColor = .white
+        cell.accessoryView = disclosureIndicator
+        
+        let company = companies[indexPath.row]
+        cell.company = company
+        
+        return cell
+    }
+}

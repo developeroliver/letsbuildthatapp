@@ -20,7 +20,6 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate 
         didSet {
             if let imageData = company?.imageData {
                 companyImageView.image = UIImage(data: imageData)
-                setupCircularStyle()
             }
             
             nameTextField.text = company?.name
@@ -61,7 +60,7 @@ class CreateCompanyController: UIViewController, UINavigationControllerDelegate 
     lazy var nameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Entrer le nom"
-        textField.font = UIFont(name: "AvenirNext-Medium", size: 14)
+        textField.font = UIFont(name: "AvenirNext-Medium", size: 18)
         textField.delegate = self
         return textField
     }()
@@ -206,7 +205,7 @@ extension CreateCompanyController {
     }
     
     private func setupNavigationItem() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(handleCancel))
+        setupCancelButton(selector: #selector(handleCancel))
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sauvegarder", style: .done, target: self, action: #selector(handleSave))
     }
@@ -232,12 +231,17 @@ extension CreateCompanyController {
         stackView.snp.makeConstraints { make in
             make.top.equalTo(companyImageView.snp.bottom).offset(padding)
             make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
-            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)        }
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)    
+        }
         
         datePicker.snp.makeConstraints { make in
             make.top.equalTo(stackView.snp.bottom).offset(8)
             make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
             make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
+        }
+        
+        DispatchQueue.main.async {
+                self.setupCircularStyle()
         }
     }
 }
