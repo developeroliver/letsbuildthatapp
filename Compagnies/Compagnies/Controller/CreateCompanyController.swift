@@ -13,7 +13,7 @@ protocol CreateCompanyControllerDelegate {
     func didEditCompany(company: Company)
 }
 
-class CreateCompanyController: UIViewController {
+class CreateCompanyController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: - Properties
     var company: Company? {
@@ -23,6 +23,7 @@ class CreateCompanyController: UIViewController {
             datePicker.date = founded
         }
     }
+    let padding = 16
     
     var delegate: CreateCompanyControllerDelegate?
     
@@ -31,6 +32,17 @@ class CreateCompanyController: UIViewController {
         let view = UIView()
         view.backgroundColor = UIColor.lightBlue
         return view
+    }()
+    
+    lazy var companyImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "select_photo_empty")
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 100 / 2
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectPhoto)))
+        return imageView
     }()
     
     lazy var nameLabel: UILabel = {
@@ -64,6 +76,7 @@ class CreateCompanyController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: "FR")
+        datePicker.preferredDatePickerStyle = .wheels
         return datePicker
     }()
     
@@ -84,11 +97,11 @@ class CreateCompanyController: UIViewController {
 // MARK: - @objc Functions
 extension CreateCompanyController {
     
-    @objc func handleCancel() {
+    @objc private func handleCancel() {
         dismiss(animated: true)
     }
     
-    @objc func handleSave() {
+    @objc private func handleSave() {
         if company == nil {
             createCompany()
         } else {
@@ -96,7 +109,7 @@ extension CreateCompanyController {
         }
     }
     
-    @objc func saveCompanyChanges() {
+    @objc private  func saveCompanyChanges() {
         guard let name = nameTextField.text, !name.isEmpty else {
             let alertController = UIAlertController(title: "Champs incomplets", message: "Veuillez remplir tous les champs avant de sauvegarder.", preferredStyle: .alert)
             let action = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -120,8 +133,17 @@ extension CreateCompanyController {
         }
     }
     
-    @objc func dismissKeyboard() {
+    @objc private  func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    // MARK: - image picker
+    @objc private func handleSelectPhoto() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        
+        present(imagePickerController, animated: true)
     }
     
     private func createCompany() {
@@ -157,7 +179,6 @@ extension CreateCompanyController {
     private func setup() {
         view.backgroundColor = UIColor.darkBlue
         
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
@@ -170,24 +191,31 @@ extension CreateCompanyController {
     
     private func layout() {
         view.addSubview(lightBlueBackgroundView)
+        view.addSubview(companyImageView)
         view.addSubview(stackView)
         view.addSubview(datePicker)
         
         lightBlueBackgroundView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(250)
+            make.height.equalTo(350)
+        }
+        
+        companyImageView.snp.makeConstraints { make in
+            make.top.equalTo(lightBlueBackgroundView.snp.top).offset(8)
+            make.centerX.equalToSuperview()
+            make.height.width.equalTo(100)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(lightBlueBackgroundView.snp.top).offset(10)
-            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(20)
-            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-20)        }
+            make.top.equalTo(companyImageView.snp.bottom).offset(padding)
+            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)        }
         
         datePicker.snp.makeConstraints { make in
-            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(20)
-            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-20)
             make.top.equalTo(stackView.snp.bottom).offset(8)
+            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
         }
     }
 }
@@ -198,5 +226,26 @@ extension CreateCompanyController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - UIImagePickerControllerDelegate
+extension CreateCompanyController: UIImagePickerControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        if let editedImage = info[.editedImage] as? UIImage {
+            companyImageView.image = editedImage
+        } else {
+            if let originalImage = info[.originalImage] as? UIImage {
+                companyImageView.image = originalImage
+            }
+        }
+        
+        picker.dismiss(animated: true, completion: nil)
     }
 }

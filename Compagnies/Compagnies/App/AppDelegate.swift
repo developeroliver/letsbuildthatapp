@@ -13,6 +13,12 @@ class CustomNavigationController: UINavigationController {
     }
 }
 
+extension UINavigationController {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+}
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

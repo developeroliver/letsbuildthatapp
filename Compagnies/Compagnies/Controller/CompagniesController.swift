@@ -40,7 +40,7 @@ class CompagniesController: UITableViewController, CreateCompanyControllerDelega
 // MARK: - @objc Functions
 extension CompagniesController {
     
-    @objc func handleAddCompany() {
+    @objc private func handleAddCompany() {
         let createCompanyController = CreateCompanyController()
         
         let navController = UINavigationController(rootViewController: createCompanyController)
@@ -49,7 +49,7 @@ extension CompagniesController {
         present(navController, animated: true)
     }
     
-    @objc func reset() {
+    @objc private func reset() {
         let alert = UIAlertController(title: "Réinitialisation data base", message: "Cette fonctionnalité n'est pas encore disponible.", preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default, handler: nil)
         
