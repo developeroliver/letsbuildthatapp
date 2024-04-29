@@ -94,6 +94,7 @@ extension CompagniesController {
     private func setupTableView() {
         tableView.backgroundColor = UIColor.darkBlue
         tableView.separatorStyle = .none
+        tableView.rowHeight = 50
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseID)
         tableView.tableFooterView = UIView()
     }
@@ -142,9 +143,25 @@ extension CompagniesController {
             cell.textLabel?.text = company.name
         }
         
+        cell.imageView?.image = UIImage(named:  "select_photo_empty")
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         
+        let imageSize: CGFloat = 40
+            
+            cell.imageView?.frame = CGRect(x: 0, y: 0, width: imageSize, height: imageSize)
+            cell.imageView?.contentMode = .scaleAspectFill
+            cell.imageView?.clipsToBounds = true
+            
+            if let imageData = company.imageData {
+                cell.imageView?.image = UIImage(data: imageData)
+            } else {
+                cell.imageView?.image = UIImage(named: "select_photo_empty")
+            }
+            
+            // Rendre l'image circulaire
+            cell.imageView?.layer.cornerRadius = imageSize / 2
+
         return cell
     }
     
