@@ -70,23 +70,3 @@ extension CompagniesController {
         tableView.tableFooterView = UIView()
     }
 }
-
-extension CompagniesController {
-    // MARK: - cell
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath) as! CompanyCell
-        
-        cell.backgroundColor = UIColor.tealColor
-        let selectedView = UIView()
-        selectedView.backgroundColor = UIColor.lightRed
-        cell.selectedBackgroundView = selectedView
-        let disclosureIndicator = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
-        disclosureIndicator.tintColor = .white
-        cell.accessoryView = disclosureIndicator
-        
-        let company = companies[indexPath.row]
-        cell.company = company
-        
-        return cell
-    }
-}

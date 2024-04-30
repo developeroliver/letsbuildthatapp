@@ -8,10 +8,15 @@
 import UIKit
 import SnapKit
 
+protocol CreateEmployeeControllerDelegate {
+    func didAddEmployee(employee: Employee)
+}
+
 class CreateEmployeeController: UIViewController {
     
     // MARK: - Properties
     let padding = 16
+    var delegate: CreateEmployeeControllerDelegate?
     
     // MARK: - UI Declarations
     lazy var lightBlueBackgroundView: UIView = {
@@ -61,17 +66,18 @@ extension CreateEmployeeController {
     
     @objc private func handeSave() {
         guard let employeeName = nameTextField.text else { return }
-        let error = CoreDataManager.shared.createEmployee(employeeName: employeeName)
         
-        if error != nil {
+        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName)
+        
+        if tuple.1 != nil {
             let alert = UIAlertController(title: "Une erreur est survenue", message: "La sauvegarde a échouée.", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             present(alert, animated: true, completion: nil)
-            
-            
         } else {
-            dismiss(animated: true)
+            dismiss(animated: true) {
+                self.delegate?.didAddEmployee(employee: tuple.0!)
+            }
         }
     }
     

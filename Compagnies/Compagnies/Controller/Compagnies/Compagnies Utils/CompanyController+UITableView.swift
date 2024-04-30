@@ -25,6 +25,22 @@ extension CompagniesController {
     }
     
     // Cell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath) as! CompanyCell
+        
+        cell.backgroundColor = UIColor.tealColor
+        let selectedView = UIView()
+        selectedView.backgroundColor = UIColor.lightRed
+        cell.selectedBackgroundView = selectedView
+        let disclosureIndicator = UIImageView(image: UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate))
+        disclosureIndicator.tintColor = .white
+        cell.accessoryView = disclosureIndicator
+        
+        let company = companies[indexPath.row]
+        cell.company = company
+        
+        return cell
+    }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
@@ -33,7 +49,7 @@ extension CompagniesController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let company = companies[indexPath.row]
         let navigation = EmployeesController()
-        navigation.compagny = company
+        navigation.company = company
         
         navigationController?.pushViewController(navigation, animated: true)
     }
@@ -62,7 +78,7 @@ extension CompagniesController {
             }
             
             let cancelAction = UIAlertAction(title: "Annuler", style: .cancel) { _ in
-                    completion(true)
+                completion(true)
             }
             
             alertController.addAction(confirmAction)
