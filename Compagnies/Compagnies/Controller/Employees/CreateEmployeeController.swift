@@ -18,6 +18,8 @@ class CreateEmployeeController: UIViewController {
     let padding = 16
     var delegate: CreateEmployeeControllerDelegate?
     var company: Company?
+    let segmentedArray = ["Junior", "Intermédiaire", "Sénior"]
+    
     
     // MARK: - UI Declarations
     lazy var lightBlueBackgroundView: UIView = {
@@ -52,7 +54,7 @@ class CreateEmployeeController: UIViewController {
         stackView.spacing = 20
         return stackView
     }()
-
+    
     
     lazy var birthdayLabel: UILabel = {
         let label = UILabel()
@@ -81,6 +83,18 @@ class CreateEmployeeController: UIViewController {
         return stackView
     }()
     
+    lazy var employeeTypeSegmentedControl: UISegmentedControl = {
+        let segment = UISegmentedControl(items: segmentedArray)
+        segment.selectedSegmentIndex = 0
+        segment.backgroundColor = .lightBlue
+        segment.selectedSegmentTintColor = UIColor.darkBlue
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        segment.setTitleTextAttributes(titleTextAttributes, for:.normal)
+        segment.layer.borderColor = UIColor.darkBlue.cgColor
+        segment.layer.borderWidth = 1
+        return segment
+    }()
+    
     // MARK: - LifeCycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,7 +103,7 @@ class CreateEmployeeController: UIViewController {
         layout()
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-            view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
     }
 }
 
@@ -119,7 +133,11 @@ extension CreateEmployeeController {
             return
         }
         
-        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName, birthday: birthdayDate, company: company)
+        guard let employeeType = employeeTypeSegmentedControl.titleForSegment(at: employeeTypeSegmentedControl.selectedSegmentIndex) else {
+            return
+        }
+        
+        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName, employeeType: employeeType, birthday: birthdayDate, company: company)
         
         if tuple.1 != nil {
             let alert = UIAlertController(title: "Une erreur est survenue", message: "La sauvegarde a échouée.", preferredStyle: .alert)
@@ -168,11 +186,12 @@ extension CreateEmployeeController {
         view.addSubview(lightBlueBackgroundView)
         view.addSubview(nameStackView)
         view.addSubview(birthdayStackView)
+        view.addSubview(employeeTypeSegmentedControl)
         
         lightBlueBackgroundView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(100)
+            make.height.equalTo(150)
         }
         
         nameStackView.snp.makeConstraints { make in
@@ -183,6 +202,12 @@ extension CreateEmployeeController {
         
         birthdayStackView.snp.makeConstraints { make in
             make.top.equalTo(nameStackView.snp.bottom).offset(padding)
+            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
+        }
+        
+        employeeTypeSegmentedControl.snp.makeConstraints { make in
+            make.top.equalTo(birthdayStackView.snp.bottom).offset(padding)
             make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
             make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
         }
@@ -197,3 +222,4 @@ extension CreateEmployeeController: UITextFieldDelegate {
         return true
     }
 }
+

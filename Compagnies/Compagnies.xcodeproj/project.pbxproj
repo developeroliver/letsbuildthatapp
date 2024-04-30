@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37642D342BE0F272004F4743 /* IndentedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37642D332BE0F272004F4743 /* IndentedLabel.swift */; };
 		3777EEBF2BDFC4EA002F7734 /* CompanyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */; };
 		3777EEC12BDFD2CD002F7734 /* CompanyController+CreateCompany.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3777EEC02BDFD2CD002F7734 /* CompanyController+CreateCompany.swift */; };
 		3777EEC32BDFD39B002F7734 /* CompanyController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3777EEC22BDFD39B002F7734 /* CompanyController+UITableView.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		37642D332BE0F272004F4743 /* IndentedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndentedLabel.swift; sourceTree = "<group>"; };
 		3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCell.swift; sourceTree = "<group>"; };
 		3777EEC02BDFD2CD002F7734 /* CompanyController+CreateCompany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyController+CreateCompany.swift"; sourceTree = "<group>"; };
 		3777EEC22BDFD39B002F7734 /* CompanyController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompanyController+UITableView.swift"; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 			children = (
 				377F39002BDECCED0077F3F6 /* CustomHeaderView.swift */,
 				3777EEBE2BDFC4EA002F7734 /* CompanyCell.swift */,
+				37642D332BE0F272004F4743 /* IndentedLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37642D342BE0F272004F4743 /* IndentedLabel.swift in Sources */,
 				377F39012BDECCED0077F3F6 /* CustomHeaderView.swift in Sources */,
 				3777EECB2BDFE2CF002F7734 /* CreateEmployeeController.swift in Sources */,
 				377F38D52BDE34EE0077F3F6 /* CompagniesController.swift in Sources */,

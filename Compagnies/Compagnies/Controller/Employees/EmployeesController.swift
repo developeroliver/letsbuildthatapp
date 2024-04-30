@@ -21,6 +21,10 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     var company: Company?
     var employees = [Employee]()
     let reuseID = "CELL_ID"
+    var shortNameEmployees = [Employee]()
+    var longNameEmployees = [Employee]()
+    var reallyLongNameEmployees = [Employee]()
+    var allEmployees = [[Employee]]()
     
     // MARK: - LifeCycle Methods
     override func viewDidLoad() {
@@ -65,19 +69,48 @@ extension EmployeesController {
     private func fetchEmployee() {
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         
-        self.employees = companyEmployees
+        shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+            if let count = employee.name?.count {
+                return count < 6
+            }
+            return false
+        })
+        
+        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+            if let count = employee.name?.count {
+                return count > 6 && count < 9
+            }
+            return false
+        })
+        
+        reallyLongNameEmployees = companyEmployees.filter({ (employee) -> Bool in
+            if let count = employee.name?.count {
+                return count > 9
+            }
+            return false
+        })
+        
+        allEmployees = [
+            shortNameEmployees,
+            longNameEmployees,
+            reallyLongNameEmployees
+        ]
+        
+        print(shortNameEmployees.count, longNameEmployees.count, reallyLongNameEmployees.count)
     }
 }
 
+// MARK: - UITableView
 extension EmployeesController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return employees.count
+        return allEmployees[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
-        let employee = employees[indexPath.row]
+        
+        let employee = allEmployees[indexPath.section][indexPath.row]
         
         if let birthday = employee.employeeinformation?.birthday {
             let dateFormatter = DateFormatter()
@@ -92,17 +125,54 @@ extension EmployeesController {
         return cell
     }
     
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return allEmployees.count
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = IndentedLabel()
+        
+        if section == 0 {
+            label.text = "Développeur Junior"
+        } else if section == 1 {
+            label.text = "Développeur Intermédiaire"
+        } else {
+            label.text = "Développeur Sénior"
+        }
+        
+        label.backgroundColor = UIColor.lightBlue
+        label.textColor = UIColor.darkBlue
+        label.font = UIFont.boldSystemFont(ofSize: 16)
+        return label
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
+    
     // MARK: - Swipe
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
         let deleteAction = UIContextualAction(style: .destructive, title: "Supprimer") { [self] (action, view, completion) in
             let alertController = UIAlertController(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer cet employé ?", preferredStyle: .actionSheet)
             
-            let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { _ in
-                let employee = self.employees[indexPath.row]
-                self.employees.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
+            let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { [self] _ in
+                let employee: Employee
+                if indexPath.section == 0 {
+                    employee = shortNameEmployees[indexPath.row]
+                    shortNameEmployees.remove(at: indexPath.row)
+                } else if indexPath.section == 1 {
+                    employee = longNameEmployees[indexPath.row]
+                    longNameEmployees.remove(at: indexPath.row)
+                } else {
+                    employee = reallyLongNameEmployees[indexPath.row]
+                    reallyLongNameEmployees.remove(at: indexPath.row)
+                }
                 
+                // Supprimer l'employé de toutes les structures de données associées
+                employees.removeAll { $0 == employee }
+                allEmployees[indexPath.section].remove(at: indexPath.row)
+                
+                // Supprimer l'employé de CoreData
                 let context = CoreDataManager.shared.persistentContainer.viewContext
                 context.delete(employee)
                 
@@ -112,6 +182,7 @@ extension EmployeesController {
                     print("Failed to delete employee:", saveError)
                 }
                 
+                tableView.deleteRows(at: [indexPath], with: .fade)
                 completion(true)
             }
             
@@ -125,8 +196,8 @@ extension EmployeesController {
             present(alertController, animated: true, completion: nil)
         }
         
-        let configuration = UISwipeActionsConfiguration(actions: [ deleteAction])
-        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
+
 }
