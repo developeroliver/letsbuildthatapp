@@ -42,7 +42,7 @@ extension EmployeesController {
     @objc private func handleAddEmployee() {
         let createEmployeeController = CreateEmployeeController()
         createEmployeeController.delegate = self
-        
+        createEmployeeController.company = company
         let navController = UINavigationController(rootViewController: createEmployeeController)
         
         present(navController, animated: true)
@@ -63,16 +63,9 @@ extension EmployeesController {
     }
     
     private func fetchEmployee() {
-        let context = CoreDataManager.shared.persistentContainer.viewContext
+        guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         
-        let request = NSFetchRequest<Employee>(entityName: "Employee")
-        
-        do {
-            let employees = try context.fetch(request)
-            self.employees = employees
-        } catch let fetchError {
-            print("Failed to fecth employee:", fetchError)
-        }
+        self.employees = companyEmployees
     }
 }
 
@@ -86,12 +79,13 @@ extension EmployeesController {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseID, for: indexPath)
         let employee = employees[indexPath.row]
         
-        if let taxId = employee.employeeinformation?.taxId {
-            cell.textLabel?.text = "\(employee.name ?? "") - \(taxId)"
+        if let birthday = employee.employeeinformation?.birthday {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            cell.textLabel?.text = "\(employee.name ?? "") - \(dateFormatter.string(from: birthday))"
         }
         
         cell.backgroundColor = UIColor.tealColor
-//        cell.textLabel?.text = employee.name
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = UIFont(name: "AvenirNext-Medium", size: 16)
         

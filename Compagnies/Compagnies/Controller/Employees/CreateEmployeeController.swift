@@ -17,6 +17,7 @@ class CreateEmployeeController: UIViewController {
     // MARK: - Properties
     let padding = 16
     var delegate: CreateEmployeeControllerDelegate?
+    var company: Company?
     
     // MARK: - UI Declarations
     lazy var lightBlueBackgroundView: UIView = {
@@ -41,10 +42,38 @@ class CreateEmployeeController: UIViewController {
         return textField
     }()
     
-    lazy var stackView: UIStackView = {
+    lazy var nameStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             nameLabel,
             nameTextField,
+            UIView()
+        ])
+        stackView.axis = .horizontal
+        stackView.spacing = 20
+        return stackView
+    }()
+
+    
+    lazy var birthdayLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Date de naissance"
+        label.font = UIFont(name: "AvenirNext-Medium", size: 16)
+        label.backgroundColor = UIColor.lightBlue
+        return label
+    }()
+    
+    lazy var birthdayTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "JJ/MM/AAAA"
+        textField.font = UIFont(name: "AvenirNext-Medium", size: 18)
+        textField.delegate = self
+        return textField
+    }()
+    
+    lazy var birthdayStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            birthdayLabel,
+            birthdayTextField,
             UIView()
         ])
         stackView.axis = .horizontal
@@ -58,6 +87,9 @@ class CreateEmployeeController: UIViewController {
         setup()
         setupNavigationItem()
         layout()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            view.addGestureRecognizer(tapGesture)
     }
 }
 
@@ -66,8 +98,28 @@ extension CreateEmployeeController {
     
     @objc private func handeSave() {
         guard let employeeName = nameTextField.text else { return }
+        guard let company = self.company else { return }
+        guard let birthdayText = birthdayTextField.text else { return }
         
-        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName)
+        if employeeName.isEmpty {
+            showAlert(title: "Le nom est vide.", message: "Veuillez entrer votre nom.")
+            return
+        }
+        
+        if birthdayText.isEmpty {
+            showAlert(title: "Date d'anniversaire vide.", message: "Veuillez entrer votre date de naissance.")
+            return
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        
+        guard let birthdayDate = dateFormatter.date(from: birthdayText) else {
+            showAlert(title: "Mauvaise date", message: "Veuillez vérifier si la date est correcte.")
+            return
+        }
+        
+        let tuple = CoreDataManager.shared.createEmployee(employeeName: employeeName, birthday: birthdayDate, company: company)
         
         if tuple.1 != nil {
             let alert = UIAlertController(title: "Une erreur est survenue", message: "La sauvegarde a échouée.", preferredStyle: .alert)
@@ -83,6 +135,18 @@ extension CreateEmployeeController {
     
     @objc private func handleCancel() {
         dismiss(animated: true)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
+        return
     }
 }
 
@@ -102,16 +166,23 @@ extension CreateEmployeeController {
     
     private func layout() {
         view.addSubview(lightBlueBackgroundView)
-        view.addSubview(stackView)
+        view.addSubview(nameStackView)
+        view.addSubview(birthdayStackView)
         
         lightBlueBackgroundView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(50)
+            make.height.equalTo(100)
         }
         
-        stackView.snp.makeConstraints { make in
+        nameStackView.snp.makeConstraints { make in
             make.top.equalTo(lightBlueBackgroundView.snp.top).offset(padding)
+            make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
+            make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
+        }
+        
+        birthdayStackView.snp.makeConstraints { make in
+            make.top.equalTo(nameStackView.snp.bottom).offset(padding)
             make.leading.equalTo(lightBlueBackgroundView.snp.leading).offset(padding)
             make.trailing.equalTo(lightBlueBackgroundView.snp.trailing).offset(-padding)
         }

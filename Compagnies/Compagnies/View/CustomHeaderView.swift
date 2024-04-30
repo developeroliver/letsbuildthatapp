@@ -20,7 +20,7 @@ class CustomHeaderView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.darkBlue
-        label.font = UIFont(name: "AvenirNext-Bold", size: 18)
+        label.font = UIFont(name: "AvenirNext-Bold", size: 20)
         label.text = "Noms"
         return label
     }()
@@ -47,7 +47,7 @@ extension CustomHeaderView {
         iconImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(10)
-            make.width.height.equalTo(30)
+            make.width.height.equalTo(25)
         }
         
         nameLabel.snp.makeConstraints { make in
