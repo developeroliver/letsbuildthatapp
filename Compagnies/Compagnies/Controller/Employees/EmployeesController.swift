@@ -13,8 +13,15 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     
     // MARK: - Protocol
     func didAddEmployee(employee: Employee) {
-        employees.append(employee)
-        tableView.reloadData()
+        
+        guard let section = employeeTypes.firstIndex(of: employee.type!) else { return }
+        
+        let row = allEmployees[section].count
+        let insertionIndexPath = IndexPath(row: row, section: section)
+        
+        allEmployees[section].append(employee)
+        
+        tableView.insertRows(at: [insertionIndexPath], with: .middle)
     }
     
     // MARK: - Properties
@@ -25,6 +32,12 @@ class EmployeesController: UITableViewController, CreateEmployeeControllerDelega
     var longNameEmployees = [Employee]()
     var reallyLongNameEmployees = [Employee]()
     var allEmployees = [[Employee]]()
+    var employeeTypes = [
+        EmployeeType.junior.rawValue,
+        EmployeeType.intermediate.rawValue,
+        EmployeeType.senior.rawValue,
+        EmployeeType.lead.rawValue
+    ]
     
     // MARK: - LifeCycle Methods
     override func viewDidLoad() {
@@ -69,34 +82,13 @@ extension EmployeesController {
     private func fetchEmployee() {
         guard let companyEmployees = company?.employees?.allObjects as? [Employee] else { return }
         
-        shortNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count < 6
-            }
-            return false
-        })
+        allEmployees = []
         
-        longNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count > 6 && count < 9
-            }
-            return false
-        })
-        
-        reallyLongNameEmployees = companyEmployees.filter({ (employee) -> Bool in
-            if let count = employee.name?.count {
-                return count > 9
-            }
-            return false
-        })
-        
-        allEmployees = [
-            shortNameEmployees,
-            longNameEmployees,
-            reallyLongNameEmployees
-        ]
-        
-        print(shortNameEmployees.count, longNameEmployees.count, reallyLongNameEmployees.count)
+        employeeTypes.forEach { employeeType in
+            allEmployees.append(
+                companyEmployees.filter { $0.type == employeeType }
+            )
+        }
     }
 }
 
@@ -132,14 +124,7 @@ extension EmployeesController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = IndentedLabel()
         
-        if section == 0 {
-            label.text = "Développeur Junior"
-        } else if section == 1 {
-            label.text = "Développeur Intermédiaire"
-        } else {
-            label.text = "Développeur Sénior"
-        }
-        
+        label.text = employeeTypes[section]
         label.backgroundColor = UIColor.lightBlue
         label.textColor = UIColor.darkBlue
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -156,21 +141,7 @@ extension EmployeesController {
             let alertController = UIAlertController(title: "Supprimer", message: "Êtes-vous sûr de vouloir supprimer cet employé ?", preferredStyle: .actionSheet)
             
             let confirmAction = UIAlertAction(title: "Confirmer", style: .destructive) { [self] _ in
-                let employee: Employee
-                if indexPath.section == 0 {
-                    employee = shortNameEmployees[indexPath.row]
-                    shortNameEmployees.remove(at: indexPath.row)
-                } else if indexPath.section == 1 {
-                    employee = longNameEmployees[indexPath.row]
-                    longNameEmployees.remove(at: indexPath.row)
-                } else {
-                    employee = reallyLongNameEmployees[indexPath.row]
-                    reallyLongNameEmployees.remove(at: indexPath.row)
-                }
-                
-                // Supprimer l'employé de toutes les structures de données associées
-                employees.removeAll { $0 == employee }
-                allEmployees[indexPath.section].remove(at: indexPath.row)
+                let employee = allEmployees[indexPath.section][indexPath.row]
                 
                 // Supprimer l'employé de CoreData
                 let context = CoreDataManager.shared.persistentContainer.viewContext
@@ -182,7 +153,10 @@ extension EmployeesController {
                     print("Failed to delete employee:", saveError)
                 }
                 
+                allEmployees[indexPath.section].remove(at: indexPath.row)
+                
                 tableView.deleteRows(at: [indexPath], with: .fade)
+                
                 completion(true)
             }
             
@@ -199,5 +173,6 @@ extension EmployeesController {
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
+
 
 }

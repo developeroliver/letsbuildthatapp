@@ -18,7 +18,12 @@ class CreateEmployeeController: UIViewController {
     let padding = 16
     var delegate: CreateEmployeeControllerDelegate?
     var company: Company?
-    let segmentedArray = ["Junior", "Intermédiaire", "Sénior"]
+    let segmentedArray = [
+        EmployeeType.junior.rawValue,
+        EmployeeType.intermediate.rawValue,
+        EmployeeType.senior.rawValue,
+        EmployeeType.lead.rawValue
+    ]
     
     
     // MARK: - UI Declarations

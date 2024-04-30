@@ -48,6 +48,8 @@ extension CompagniesController {
             tableView.deleteRows(at: indexPathToRemove, with: .left)
         }
     }
+    
+    @objc private func handleClean() { }
 }
 
 // MARK: - Helpers
@@ -61,7 +63,10 @@ extension CompagniesController {
     private func setupNavigationItem() {
         setupPlusButtonInNavBar(selector: #selector(handleAddCompany))
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(handleReset))
+        navigationItem.leftBarButtonItems = [
+            UIBarButtonItem(title: "Réinitialiser", style: .plain, target: self, action: #selector(handleReset)),
+            UIBarButtonItem(title: "Clean", style: .plain, target: self, action: #selector(handleClean))
+        ]
     }
     
     private func setupTableView() {
