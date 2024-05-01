@@ -106,12 +106,7 @@ extension CompagniesController {
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let label = UILabel()
-        label.text = "Pas de société de disponible..."
-        label.textColor = .white
-        label.textAlignment = .center
-        label.font =  UIFont(name: "AvenirNext-Medium", size: 18)
-        
+        let label = NoSocieteView()
         return label
     }
     
