@@ -396,6 +396,7 @@
 				DEVELOPMENT_TEAM = R5L72AD597;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Compagnies/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We would like usage of your photo library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -406,7 +407,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.oliviergeiger.Appetizers;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oliviergeiger.Trefle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -428,6 +429,7 @@
 				DEVELOPMENT_TEAM = R5L72AD597;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Compagnies/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We would like usage of your photo library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -438,7 +440,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.oliviergeiger.Appetizers;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oliviergeiger.Trefle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
