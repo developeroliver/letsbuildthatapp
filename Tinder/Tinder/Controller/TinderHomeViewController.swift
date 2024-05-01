@@ -12,57 +12,40 @@ class TinderHomeViewController: UIViewController {
     
     // MARK: - Properties
     let topStackView = TopBarView()
-    let cardsDeckView = CardView()
+    let cardsDeckView = UIView()
     let buttonsStackView = BottomBarView()
-    
-    // MARK: - UI
-    lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [topStackView, cardsDeckView, buttonsStackView])
-        stackView.axis = .vertical
-        return stackView
-    }()
     
     //MARK: - LifeCycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        style()
-        layout()
+        setupLayout()
         setupDummyCards()
-    }
-    
-}
-
-// MARK: - @objc & logic functions
-extension TinderHomeViewController {
-    
-    private func setupDummyCards() {
-        
-    }
-}
-
-// MARK: - Helpers
-extension TinderHomeViewController {
-    
-    private func style() {
         view.backgroundColor = .systemBackground
     }
     
-    private func layout() {
-        view.addSubview(stackView)
-        
-        stackView.bringSubviewToFront(cardsDeckView)
-        
-        stackView.snp.makeConstraints { make in
+    fileprivate func setupDummyCards() {
+        let cardView = CardView(frame: .zero)
+        cardsDeckView.addSubview(cardView)
+        cardView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    // MARK:- Fileprivate
+    
+    fileprivate func setupLayout() {
+        let overallStackView = UIStackView(arrangedSubviews: [topStackView, cardsDeckView, buttonsStackView])
+        overallStackView.axis = .vertical
+        view.addSubview(overallStackView)
+        overallStackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing)
-            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        overallStackView.isLayoutMarginsRelativeArrangement = true
+        overallStackView.layoutMargins = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12)
         
-        cardsDeckView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(8)
-            make.trailing.equalToSuperview().offset(-8) 
-        }
+        view.bringSubviewToFront(cardsDeckView)
     }
 }

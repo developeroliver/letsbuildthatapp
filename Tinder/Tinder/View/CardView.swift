@@ -10,77 +10,68 @@ import SnapKit
 
 class CardView: UIView {
     
-    // MARK: - UI
-    private lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(imageLiteralResourceName: "lady5c.jpg")
+    fileprivate let imageView: UIImageView = {
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
         return imageView
     }()
     
-    //MARK: - LifeCycle Methods
+    // Configurations
+    fileprivate let threshold: CGFloat = 80
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        style()
-        layout()
-        setupPanGesture()
+        
+        addSubview(imageView)
+        imageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        addGestureRecognizer(panGesture)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: - @objc & logic functions
-extension CardView {
-    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        let translation = gesture.translation(in: nil)
-        self.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
-        
+    @objc fileprivate func handlePan(gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .changed:
             handleChanged(gesture)
         case .ended:
-            handleEnded()
+            handleEnded(gesture: gesture)
         default:
             ()
         }
     }
     
-    private func setupPanGesture() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-        addGestureRecognizer(panGesture)
-    }
-    
     fileprivate func handleChanged(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: nil)
-        self.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
-    }
-    
-    fileprivate func handleEnded() {
-        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1,options: .curveEaseOut, animations: {
-            self.transform = .identity
-        }) { (_) in
-        }
-    }
-}
-
-// MARK: - Helpers
-extension CardView {
-    
-    private func style() {
-        backgroundColor = .systemBackground
-    }
-    
-    private func layout() {
-        addSubview(imageView)
+      
+        let degrees: CGFloat = translation.x / 20
+        let angle = degrees * .pi / 180
         
-        imageView.snp.makeConstraints { make in
-            make.top.bottom.leading.trailing.equalToSuperview()
+        let rotationalTransformation = CGAffineTransform(rotationAngle: angle)
+        self.transform = rotationalTransformation.translatedBy(x: translation.x, y: translation.y)
+    }
+    
+    fileprivate func handleEnded(gesture: UIPanGestureRecognizer) {
+        let translationDirection: CGFloat = gesture.translation(in: nil).x > 0 ? 1 : -1
+        let shouldDismissCard = abs(gesture.translation(in: nil).x) > threshold
+        
+        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.1, options: .curveEaseOut, animations: {
+            if shouldDismissCard {
+                self.frame = CGRect(x: 1000 * translationDirection, y: 0, width: self.frame.width, height: self.frame.height)
+            } else {
+                self.transform = .identity
+            }
+            
+        }) { (_) in
+            self.transform = .identity
+            self.frame = CGRect(x: 0, y: 0, width: self.superview!.frame.width, height: self.superview!.frame.height)
         }
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
-
